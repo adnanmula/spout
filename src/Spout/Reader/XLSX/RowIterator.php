@@ -238,9 +238,9 @@ class RowIterator implements IteratorInterface
     {
         // Read dimensions of the sheet
         $dimensionRef = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF); // returns 'A1:M13' for instance (or 'A1' for empty sheet)
-        if (\preg_match('/[A-Z]+(\d+):([A-Z]+\d+)/', $dimensionRef, $matches)) {
-            $this->numRows = $matches[1];
-            $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[2]) + 1;
+        if (\preg_match('/[A-Z]+\d+:([A-Z]+(\d+))/', $dimensionRef, $matches)) {
+            $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[1]) + 1;
+            $this->numRows = $matches[2];
         }
 
         return XMLProcessor::PROCESSING_CONTINUE;
