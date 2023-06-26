@@ -71,6 +71,9 @@ class RowIterator implements IteratorInterface
     /** @var int The number of columns the sheet has (0 meaning undefined) */
     protected $numColumns = 0;
 
+    /** @var int The number of rows the sheet has (0 meaning undefined) */
+    protected $numRows = 0;
+
     /** @var bool Whether empty rows should be returned or skipped */
     protected $shouldPreserveEmptyRows;
 
@@ -153,6 +156,7 @@ class RowIterator implements IteratorInterface
         $this->rowBuffer = null;
         $this->hasReachedEndOfFile = false;
         $this->numColumns = 0;
+        $this->numRows = 0;
 
         $this->next();
     }
@@ -234,8 +238,9 @@ class RowIterator implements IteratorInterface
     {
         // Read dimensions of the sheet
         $dimensionRef = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF); // returns 'A1:M13' for instance (or 'A1' for empty sheet)
-        if (\preg_match('/[A-Z]+\d+:([A-Z]+\d+)/', $dimensionRef, $matches)) {
+        if (\preg_match('/[A-Z]+\d+:([A-Z]+(\d+))/', $dimensionRef, $matches)) {
             $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[1]) + 1;
+            $this->numRows = $matches[2];
         }
 
         return XMLProcessor::PROCESSING_CONTINUE;
